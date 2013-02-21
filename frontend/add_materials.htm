@@ -1,0 +1,46 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<title>save material</title>
+	<!-- include jquery library file-->
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+	<!-- The ajax/jquery stuff -->
+	<script type="text/javascript">
+
+	$(function(){
+		//Get the input data using the post method when Push into mysql is clicked .. we pull it using the id fields of ID, Name and Email respectively...
+		$("#insert").click(function(){
+			//Get values of the input fields and store it into the variables.
+			var Name=$("#Name").val();
+			var Feed=$("#Feed").val();
+			var Power=$("#Power").val();
+
+			var dataString = {Name: Name, Feed: Feed, Power: Power};
+
+			$.ajax({
+			type: "POST",
+			url: "/php/add_materials.php",
+			data: dataString,
+			success: function(data){
+
+				$("#message").html(data);
+				$("#message").hide();
+				$("#message").fadeIn(1500); //Fade in the data given by the insert.php file
+				
+				console.log("KEY - added succesfully!");
+				}
+			});
+		});
+	});
+	</script>
+</head>
+<body>
+	<label>Name: </label> <input id="Name" type="text" />
+	<label>Feed: </label> <input id="Feed" type="text" />
+	<label>Power: </label> <input id="Power" type="text" />
+	<a id="insert" title="Insert Data" href="#">Push into mysql</a>
+	
+	<!-- For displaying a message -->
+	<div id="message"></div>
+</body>
+</html>

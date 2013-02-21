@@ -215,6 +215,10 @@ $(document).ready(function(){
                       '<input class="intensity" type="textfield" value="100" title="intensity 0-100%" style="width:26px;" data-delay="500">' +
                     '</div>' +
                     '<span class="colorbtns" style="margin-left:6px">'+buttons+'</span>' +
+                    '<div class="input-prepend" style="margin-left:6px">' +
+                      '<span class="add-on" style="margin-right:-5px;">material</span>' +
+                      '<select><option value="test">test</option><option value="test">test</option><option value="test">test</option></select>' +
+                    '</div>' +
                   '</div>' +
                 '</div>';
       // $('#passes').append(html);
