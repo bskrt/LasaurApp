@@ -5,12 +5,12 @@ import socket, webbrowser
 from wsgiref.simple_server import WSGIRequestHandler, make_server
 from bottle import *
 from serial_manager import SerialManager
-from flash import flash_upload
+from flash import flash_upload, reset_atmega
 from filereaders import read_svg, read_dxf
 
 
 APPNAME = "lasaurapp"
-VERSION = "13.01"
+VERSION = "13.02"
 COMPANY_NAME = "com.nortd.labs"
 SERIAL_PORT = None
 BITSPERSECOND = 57600
@@ -380,6 +380,12 @@ def flash_firmware_handler(firmware_file=FIRMWARE):
                 ret. append('<br><a href="/flash_firmware?port=COM%s">COM%s</a>' % (i, i))
         return ''.join(ret)
     
+
+@route('/reset_atmega')
+def reset_atmega_handler():
+    reset_atmega(HARDWARE)
+    return '1'
+
 
 # @route('/gcode/:gcode_line')
 # def gcode_handler(gcode_line):

@@ -321,16 +321,29 @@ $(document).ready(function(){
         hardware_ready_state = true;
         $("#connect_btn").html("Ready");
       } else {
+        if (data.serial_connected) {
+          $("#connect_btn").html("Busy");
+        }
         hardware_ready_state = false;
       }
 
       // door, chiller, power, limit, buffer
       if (data.serial_connected) {
         if (data.door_open) {
-          $().uxmessage('warning', "Door is open!"); 
+          $('#door_status_btn').removeClass('btn-success')
+          $('#door_status_btn').addClass('btn-warning') 
+          // $().uxmessage('warning', "Door is open!");
+        } else {
+          $('#door_status_btn').removeClass('btn-warning')
+          $('#door_status_btn').addClass('btn-success')         
         }
         if (data.chiller_off) {
-          $().uxmessage('warning', "Chiller is off!"); 
+          $('#chiller_status_btn').removeClass('btn-success')
+          $('#chiller_status_btn').addClass('btn-warning')           
+          // $().uxmessage('warning', "Chiller is off!"); 
+        } else {
+          $('#chiller_status_btn').removeClass('btn-warning')
+          $('#chiller_status_btn').addClass('btn-success')
         }
         if (data.power_off) {
           $().uxmessage('error', "Power is off!"); 
@@ -416,6 +429,7 @@ $(document).ready(function(){
     }
   );
 
+  $("#pause_btn").tooltip({placement:'bottom', delay: {show:500, hide:100}});
   $("#pause_btn").click(function(e){  
     if (pause_btn_state == true) {  // unpause
       $.get('/pause/0', function(data) {
@@ -446,13 +460,13 @@ $(document).ready(function(){
   //\\\\\\ serial connect and pause button \\\\\\\\
   
   
-
+  $("#cancel_btn").tooltip({placement:'bottom', delay: {show:500, hide:100}});
   $("#cancel_btn").click(function(e){
   	var gcode = '!\n'  // ! is enter stop state char
   	$().uxmessage('notice', gcode.replace(/\n/g, '<br>'));
   	send_gcode(gcode, "Stopping ...", false);	
 	  var delayedresume = setTimeout(function() {
-    	var gcode = '~\nG0X0Y0F20000\n'  // ~ is resume char
+    	var gcode = '~\nG90\nM81\nG0X0Y0F20000\n'  // ~ is resume char
     	$().uxmessage('notice', gcode.replace(/\n/g, '<br>'));
     	send_gcode(gcode, "Resetting ...", false);
 	  }, 1000);
@@ -480,10 +494,21 @@ $(document).ready(function(){
     	// also reset offset
     	reset_offset();
     }
-    gcode = 'G0X0Y0F16000\n'
+    gcode = 'G90\nG0X0Y0F16000\n'
     // $().uxmessage('notice', gcode);  
   	send_gcode(gcode, "Going to origin ...", false);
   	e.preventDefault();		
   });  
+
+  $("#reset_atmega").click(function(e){
+    $.get('/reset_atmega', function(data) {
+      if (data != "") {
+        $().uxmessage('success', "Atmega restarted!");
+      } else {
+        $().uxmessage('error', "Atmega restart failed!");
+      }   
+    });
+    e.preventDefault();   
+  });
   
 });  // ready
